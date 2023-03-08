@@ -8,9 +8,9 @@ git clone https://github.com/lucianobm/python_cicd.git
 docker image build -t ubuntu_python_boto3 .
 
 # Run containers - each container should have a bind mount to one of the repo directories
-docker run -d -t --name repo_python -v /root/w16_01_b/python:/repo_python ubuntu_python_boto3
-docker run -d -t --name repo_python_boto3 -v /root/w16_01_b/python_boto3:/repo_python_boto3 ubuntu_python_boto3
-docker run -d -t --name repo_python_cicd -v /root/w16_01_b/python_cicd:/repo_python_cicd ubuntu_python_boto3
+docker run -d -t --name repo_python -v $(pwd)/python:/repo_python ubuntu_python_boto3
+docker run -d -t --name repo_python_boto3 -v $(pwd)/python_boto3:/repo_python_boto3 ubuntu_python_boto3
+docker run -d -t --name repo_python_cicd -v $(pwd)/python_cicd:/repo_python_cicd ubuntu_python_boto3
 
 # Log into each container and verify access to each repo directory
 
