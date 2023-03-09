@@ -1,0 +1,34 @@
+services:
+
+  repo_python:
+    build:
+      context: .
+      dockerfile: repo1.Dockerfile
+    image: repo_python
+    container_name: repo_python
+    networks:
+      - Development
+
+  repo_python_boto3:
+    build:
+      context: .
+      dockerfile: repo2.Dockerfile
+    image: repo_python_boto3
+    container_name: repo_python_boto3
+    networks:
+      - Production
+
+  repo_python_cicd:
+    build:
+      context: .
+      dockerfile: repo3.Dockerfile
+    image: repo_python_cicd
+    container_name: repo_python_cicd
+    networks:
+      - Production
+
+networks:
+    Development:
+      driver: bridge
+    Production:
+      driver: bridge
