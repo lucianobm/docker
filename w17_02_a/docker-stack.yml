@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7.0.9
+    networks:
+      - backend
+    deploy:
+      replicas: 4
+      placement:
+        constraints: [node.role == worker]
+
+  apache:
+    image: httpd:2.4.56
+    networks:
+      - frontend
+    deploy:
+      replicas: 10
+      placement:
+        constraints: [node.role == worker]
+
+  db:
+    image: postgres:15.2
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    environment:
+      - POSTGRES_PASSWORD=password
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+
+  visualizer:
+    image: bretfisher/visualizer
+    ports:
+      - 8080:8080
+    networks:
+      - frontend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == worker]
+
+networks:
+  frontend:
+  backend:
+
+volumes:
+  db-data:
