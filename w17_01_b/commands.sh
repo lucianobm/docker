@@ -26,7 +26,7 @@ docker service create --name apache -p 80:80 --network frontend --replicas 10 ht
 docker service create --name db --network backend -e POSTGRES_PASSWORD=password --mount type=volume,source=db-data,target=/var/lib/postgresql/data postgres:15.2
 
 # Visualizer
-docker service create --name=viz --publish=8080:8080/tcp --constraint=node.role==manager --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock bretfisher/visualizer
+docker service create --name=visualizer --publish=8080:8080/tcp --constraint=node.role==manager --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock bretfisher/visualizer
 
 # 
 docker service ls
