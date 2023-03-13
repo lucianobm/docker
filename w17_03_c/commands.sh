@@ -7,6 +7,7 @@ cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
 overlay
 br_netfilter
 EOF
+
 sudo modprobe overlay
 sudo modprobe br_netfilter
 
@@ -57,7 +58,19 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 kubeadm token create --print-join-command
 
 # On each node
-
+kubeadm join xxx.xxx.xxx.xxx:6443 --token <token> \
+        --discovery-token-ca-cert-hash sha256:xxxxxxxxxxxxxxxxxxxx
 
 # On node1 (control plane)
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+# Calico
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+
+# or
+
+# Wavenet
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+# Copy ~/.kube/config to local machine
+
+#
+kubectl apply -f deployment.yml
