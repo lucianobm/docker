@@ -1,0 +1,131 @@
+# redis deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  selector:
+    matchLabels:
+      app: redis
+#  replicas: 4
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7.0.9
+        ports:
+        - containerPort: 6379
+#      nodeSelector:
+#        role: worker
+
+---
+
+# apache deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache
+#  labels:
+#    app: apache
+spec:
+  selector:
+    matchLabels:
+      app: apache
+#  replicas: 10
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+      - name: apache
+        image: httpd:2.4.56
+        ports:
+        - containerPort: 80
+#      nodeSelector:
+#        role: worker        
+
+---
+
+# db deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  labels:
+    app: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: db
+        image: postgres:15.2
+        env:
+        - name: POSTGRES_PASSWORD
+          value: password
+        ports:
+        - containerPort: 5432        
+        volumeMounts:
+        - name: db-data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+#      nodeSelector:
+#        role: worker
+
+---
+
+# visualizer deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visualizer
+  labels:
+    app: visualizer
+spec:
+  selector:
+    matchLabels:
+      app: visualizer
+  template:
+    metadata:
+      labels:
+        app: visualizer
+    spec:
+      containers:
+      - name: visualizer
+        image: bretfisher/visualizer
+        ports:
+          - containerPort: 8080
+#      nodeSelector:
+#        role: worker
+
+---
+
+# visualizer service
+apiVersion: v1
+kind: Service
+metadata:
+  name: visualizer
+spec:
+  selector:
+    app: visualizer
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer
