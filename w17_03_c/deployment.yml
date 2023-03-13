@@ -9,8 +9,7 @@ spec:
   selector:
     matchLabels:
       app: redis
-#  replicas: 4
-  replicas: 2
+  replicas: 4
   template:
     metadata:
       labels:
@@ -31,14 +30,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: apache
-#  labels:
-#    app: apache
+  labels:
+    app: apache
 spec:
   selector:
     matchLabels:
       app: apache
-#  replicas: 10
-  replicas: 2
+  replicas: 10
   template:
     metadata:
       labels:
@@ -83,10 +81,24 @@ spec:
           mountPath: /var/lib/postgresql/data
       volumes:
         - name: db-data
-          persistentVolumeClaim:
-            claimName: postgres-pvc
 #      nodeSelector:
 #        role: worker
+
+---
+
+# db service
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  labels:
+    app: db
+spec:
+  selector:
+    app: db
+  ports:
+    - port: 5432
+  type: NodePort
 
 ---
 
@@ -95,8 +107,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: visualizer
-  labels:
-    app: visualizer
+#  labels:
+#    app: visualizer
 spec:
   selector:
     matchLabels:
@@ -128,4 +140,5 @@ spec:
     - name: http
       port: 8080
       targetPort: 8080
-  type: LoadBalancer
+      nodePort: 30000
+  type: NodePort
