@@ -27,15 +27,3 @@ kubectl get all
 
 # Validade that you eventual see the index.html pages from both Deployment 1 and Deployment 2
 curl localhost
-
-
-
-
-
-
-
-
-
-
-
-
