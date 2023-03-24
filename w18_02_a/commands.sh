@@ -9,17 +9,3 @@ kubectl get persistentvolumes -o yaml
 
 kubectl get pvc custom-pvc
 kubectl get pvc custom-pvc -o yaml
-
-
-
-
-
-
-
-
-
-
-
-
-
-
