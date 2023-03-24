@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: daily-deployments-cronjob
+spec:
+  schedule: "00 22 * * *"
+  timeZone: "America/Sao_Paulo"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: my-app
+        spec:
+          containers:
+          - name: my-container
+            image: busybox
+            command: ['sh', '-c', 'kubectl create configmap config-one --from-file=index.html=index-one.html && kubectl create configmap config-two --from-file=index.html=index-two.html && kubectl apply -f deployment-one.yml && kubectl apply -f deployment-two.yml && kubectl apply -f lb-service.yml']
+            volumeMounts:
+            - name: manifests
+              mountPath: /mnt
+          restartPolicy: OnFailure
+          volumes:
+          - name: manifests
+            persistentVolumeClaim:
+              claimName: custom-pvc
